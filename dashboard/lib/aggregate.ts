@@ -137,11 +137,12 @@ export type MonthlyValueBucket = {
   isCurrent: boolean
 }
 
-// Somt phone_clicks + whatsapp_clicks + form_leads + gmb_calls per kalender-
-// maand (dus inclusief GMB-bel-leads, in tegenstelling tot de `total_leads`-
-// kolom zelf, die geen gmb_calls meetelt) voor exact de meegegeven maanden.
-// Ontbrekende data wordt 0 in plaats van de maand weg te laten, zodat de
-// Waarde-tab altijd precies 3 balken toont, ook voor een net toegevoegde site.
+// Somt total_leads per kalendermaand. total_leads is een gegenereerde kolom
+// (migration 0004_gmb.sql) die reeds phone_clicks + whatsapp_clicks +
+// form_leads + gmb_calls bevat — dus GMB-bel-leads zijn automatisch inbegrepen.
+// Alleen data voor exact de meegegeven maanden wordt opgeteld; ontbrekende
+// data wordt 0 in plaats van de maand weg te laten, zodat de Waarde-tab
+// altijd precies 3 balken toont, ook voor een net toegevoegde site.
 export function bucketByCalendarMonth(
   rows: DailyMetricRow[],
   months: CalendarMonthRange[]
@@ -151,8 +152,7 @@ export function bucketByCalendarMonth(
   for (const row of rows) {
     const key = row.date.slice(0, 7)
     if (!totals.has(key)) continue
-    const allLeads = row.phone_clicks + row.whatsapp_clicks + row.form_leads + row.gmb_calls
-    totals.set(key, (totals.get(key) ?? 0) + allLeads)
+    totals.set(key, (totals.get(key) ?? 0) + row.total_leads)
   }
 
   return months.map((m) => ({
