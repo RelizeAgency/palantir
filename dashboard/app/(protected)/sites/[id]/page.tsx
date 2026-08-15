@@ -10,10 +10,12 @@ import {
   getSiteSeoPeriodTotals,
 } from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
-import { bucketByWeek, dailySeoSeries } from '@/lib/aggregate'
+import { bucketByWeek, bucketByCalendarMonth, dailySeoSeries } from '@/lib/aggregate'
+import { getThreeCalendarMonths, getThreeMonthFetchRange } from '@/lib/calendarMonths'
 import { LeadsSection } from '@/components/site-detail/LeadsSection'
 import { GmbSection } from '@/components/site-detail/GmbSection'
 import { SeoSection } from '@/components/site-detail/SeoSection'
+import { ValueSection } from '@/components/site-detail/ValueSection'
 import { Tabs } from '@/components/site-detail/Tabs'
 
 export default async function SiteDetailPage({
@@ -61,6 +63,10 @@ export default async function SiteDetailPage({
     getSiteDailyGa4Metrics(supabase, id, seoRange),
   ])
 
+  const calendarMonths = getThreeCalendarMonths()
+  const valueDaily = await getSiteDailyMetrics(supabase, id, getThreeMonthFetchRange(calendarMonths))
+  const monthlyValueBuckets = bucketByCalendarMonth(valueDaily, calendarMonths)
+
   return (
     <div>
       <div className="mb-5">
@@ -90,6 +96,17 @@ export default async function SiteDetailPage({
                 seoSeries={seoSeries}
                 ga4Totals={ga4Totals}
                 ga4Daily={ga4Daily}
+              />
+            ),
+          },
+          {
+            id: 'value',
+            label: 'Waarde',
+            content: (
+              <ValueSection
+                siteId={id}
+                leadValueEur={site.lead_value_eur}
+                months={monthlyValueBuckets}
               />
             ),
           },

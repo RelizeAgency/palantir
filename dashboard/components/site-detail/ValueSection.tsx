@@ -1,0 +1,57 @@
+import type { MonthlyValueBucket } from '@/lib/aggregate'
+import { LeadValueForm } from '@/components/site-detail/LeadValueForm'
+import { StatCard } from '@/components/site-detail/StatCard'
+import { BarChartMonthly } from '@/components/charts/BarChartMonthly'
+
+function formatEuro(n: number): string {
+  return new Intl.NumberFormat('nl-NL', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(n)
+}
+
+export function ValueSection({
+  siteId,
+  leadValueEur,
+  months,
+}: {
+  siteId: string
+  leadValueEur: number | null
+  months: MonthlyValueBucket[]
+}) {
+  // months is oudste-eerst: [maand-2, vorige maand, huidige maand]
+  const lastMonth = months[1]
+  const monthBeforeThat = months[0]
+
+  return (
+    <div>
+      <div className="mb-4">
+        <LeadValueForm siteId={siteId} initialValue={leadValueEur} />
+      </div>
+
+      {leadValueEur === null ? (
+        <p className="text-sm text-secondary">
+          Vul een gemiddelde leadwaarde in om de potentiële omzet te zien.
+        </p>
+      ) : (
+        <>
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <StatCard
+              label="Potentiële omzet vorige maand"
+              value={formatEuro(lastMonth.totalLeads * leadValueEur)}
+              current={lastMonth.totalLeads * leadValueEur}
+              previous={monthBeforeThat.totalLeads * leadValueEur}
+              emphasize
+            />
+          </div>
+
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <div className="mb-2 text-sm font-medium text-secondary">Potentiële omzet per maand</div>
+            <BarChartMonthly data={months} leadValueEur={leadValueEur} />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
