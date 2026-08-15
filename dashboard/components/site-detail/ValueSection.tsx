@@ -2,14 +2,7 @@ import type { MonthlyValueBucket } from '@/lib/aggregate'
 import { LeadValueForm } from '@/components/site-detail/LeadValueForm'
 import { StatCard } from '@/components/site-detail/StatCard'
 import { BarChartMonthly } from '@/components/charts/BarChartMonthly'
-
-function formatEuro(n: number): string {
-  return new Intl.NumberFormat('nl-NL', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(n)
-}
+import { formatEuro } from '@/lib/format'
 
 export function ValueSection({
   siteId,

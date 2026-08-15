@@ -3,14 +3,7 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from 'recharts'
 import type { MonthlyValueBucket } from '@/lib/aggregate'
 import { STAT_COLORS } from '@/lib/statColors'
-
-function formatEuro(n: number): string {
-  return new Intl.NumberFormat('nl-NL', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(n)
-}
+import { formatEuro } from '@/lib/format'
 
 type ChartRow = MonthlyValueBucket & { value: number }
 
