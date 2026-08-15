@@ -15,10 +15,12 @@ export function ValueSection({
   siteId,
   leadValueEur,
   months,
+  ytdLeads,
 }: {
   siteId: string
   leadValueEur: number | null
   months: MonthlyValueBucket[]
+  ytdLeads: number
 }) {
   // months is oudste-eerst: [maand-2, vorige maand, huidige maand]
   const lastMonth = months[1]
@@ -43,6 +45,12 @@ export function ValueSection({
               current={lastMonth.totalLeads * leadValueEur}
               previous={monthBeforeThat.totalLeads * leadValueEur}
               emphasize
+            />
+            <StatCard
+              label="Potentiële omzet dit jaar (jan t/m nu)"
+              value={formatEuro(ytdLeads * leadValueEur)}
+              current={ytdLeads * leadValueEur}
+              previous={ytdLeads * leadValueEur}
             />
           </div>
 

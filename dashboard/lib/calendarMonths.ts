@@ -56,3 +56,15 @@ export function getThreeMonthFetchRange(
     currentEnd: months[months.length - 1].end,
   }
 }
+
+// 1 januari van het lopende kalenderjaar t/m vandaag — bewust niet de laatste
+// 12 maanden "rolling", maar het echte kalenderjaar-tot-nu-toe.
+export function getYearToDateRange(
+  today: Date = new Date()
+): { currentStart: string; currentEnd: string } {
+  const year = today.getUTCFullYear()
+  return {
+    currentStart: `${year}-01-01`,
+    currentEnd: `${year}-${pad(today.getUTCMonth() + 1)}-${pad(today.getUTCDate())}`,
+  }
+}

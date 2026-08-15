@@ -11,7 +11,7 @@ import {
 } from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
 import { bucketByWeek, bucketByCalendarMonth, dailySeoSeries } from '@/lib/aggregate'
-import { getThreeCalendarMonths, getThreeMonthFetchRange } from '@/lib/calendarMonths'
+import { getThreeCalendarMonths, getThreeMonthFetchRange, getYearToDateRange } from '@/lib/calendarMonths'
 import { LeadsSection } from '@/components/site-detail/LeadsSection'
 import { GmbSection } from '@/components/site-detail/GmbSection'
 import { SeoSection } from '@/components/site-detail/SeoSection'
@@ -67,6 +67,9 @@ export default async function SiteDetailPage({
   const valueDaily = await getSiteDailyMetrics(supabase, id, getThreeMonthFetchRange(calendarMonths))
   const monthlyValueBuckets = bucketByCalendarMonth(valueDaily, calendarMonths)
 
+  const ytdDaily = await getSiteDailyMetrics(supabase, id, getYearToDateRange())
+  const ytdLeads = ytdDaily.reduce((sum, row) => sum + row.total_leads, 0)
+
   return (
     <div>
       <div className="mb-5">
@@ -107,6 +110,7 @@ export default async function SiteDetailPage({
                 siteId={id}
                 leadValueEur={site.lead_value_eur}
                 months={monthlyValueBuckets}
+                ytdLeads={ytdLeads}
               />
             ),
           },
