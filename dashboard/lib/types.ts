@@ -7,6 +7,7 @@ export type Site = {
   gsc_site_url: string | null
   gmb_location_id: string | null
   status: 'active' | 'paused'
+  lead_value_eur: number | null
   created_at: string
 }
 
