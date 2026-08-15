@@ -62,6 +62,11 @@ export async function removeSite(siteId: string) {
 
 export async function updateLeadValue(siteId: string, leadValueEur: number | null) {
   await requireUser()
+
+  if (leadValueEur !== null && (!Number.isFinite(leadValueEur) || leadValueEur < 0)) {
+    throw new Error('Leadwaarde moet een positief bedrag zijn.')
+  }
+
   const supabase = createServiceRoleClient()
   const { error } = await supabase.from('sites').update({ lead_value_eur: leadValueEur }).eq('id', siteId)
   if (error) throw error
