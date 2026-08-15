@@ -3,14 +3,13 @@ main = "src/index.ts"
 compatibility_date = "2026-08-13"
 compatibility_flags = ["nodejs_compat"]
 
-# 5x/dag, elke 5 uur: 07:00, 12:00, 17:00, 22:00, 03:00 NL-tijd (CEST, UTC+2).
-# Cron triggers kennen geen tijdzone (altijd UTC) — na de klokwissel naar
-# wintertijd (CET, UTC+1) in oktober loopt dit 1 uur uit t.o.v. lokale tijd
-# tot de uren hieronder handmatig met 1 worden opgeschoven. De sync zelf
-# haalt elke run de laatste 3 dagen opnieuw op, dus laat aankomende GA4-data
-# corrigeert zichzelf op de eerstvolgende run.
+# 48x/dag — elk half uur, de klok rond, geen tijdvenster meer (bewust gekozen
+# voor maximale actualiteit). Ruim binnen de gratis GA4/GSC-quota (±4% van
+# het strengste dagquotum) en de gratis Cloudflare-requestlimiet. De sync
+# zelf haalt elke run de laatste 3 dagen opnieuw op, dus laat aankomende
+# GA4/GSC-data corrigeert zichzelf vanzelf op de eerstvolgende run.
 [triggers]
-crons = ["0 1,5,10,15,20 * * *"]
+crons = ["*/30 * * * *"]
 
 # Secrets (set via `wrangler secret put <NAME>`, not committed here):
 #   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
