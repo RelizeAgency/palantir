@@ -13,7 +13,8 @@ export function SitesTable({
         <thead>
           <tr className="border-b border-border text-left text-xs text-secondary">
             <th className="px-4 py-2 font-medium">Site</th>
-            <th className="px-4 py-2 font-medium">Bel</th>
+            <th className="px-4 py-2 font-medium">Bel (website)</th>
+            <th className="px-4 py-2 font-medium">Bel (GMB)</th>
             <th className="px-4 py-2 font-medium">WhatsApp</th>
             <th className="px-4 py-2 font-medium">Formulier</th>
             <th className="px-4 py-2 font-medium">Totaal</th>
@@ -29,6 +30,7 @@ export function SitesTable({
                 </Link>
               </td>
               <td className="px-4 py-2.5 text-secondary">{totals.phone_clicks_cur}</td>
+              <td className="px-4 py-2.5 text-secondary">{totals.gmb_calls_cur}</td>
               <td className="px-4 py-2.5 text-secondary">{totals.whatsapp_clicks_cur}</td>
               <td className="px-4 py-2.5 text-secondary">{totals.form_leads_cur}</td>
               <td className="px-4 py-2.5 font-medium text-primary">{totals.total_leads_cur}</td>
