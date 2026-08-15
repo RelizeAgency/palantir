@@ -1,0 +1,83 @@
+<h2>Sites-overzicht: A + B gecombineerd</h2>
+<p class="subtitle">Weergave-toggle (kaarten / tabel) + periode-keuze bovenaan, geldt voor alle sites tegelijk</p>
+
+<div class="mockup">
+  <div class="mockup-header">Dashboard</div>
+  <div class="mockup-body" style="padding:16px">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;gap:6px">
+        <button class="mock-button" style="opacity:1">▦ Kaarten</button>
+        <button class="mock-button" style="opacity:.5">☰ Tabel</button>
+      </div>
+      <div style="display:flex;gap:4px;font-size:12px">
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">7d</span>
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">14d</span>
+        <span style="padding:4px 8px;border-radius:6px;background:#8882;font-weight:600">Maand</span>
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">3mnd</span>
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">6mnd</span>
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">Jaar</span>
+        <span style="padding:4px 8px;border:1px solid #8884;border-radius:6px">2 jaar</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Loodgieter013.nl</div>
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:26px;font-weight:700">47 leads</div>
+          <div style="font-size:12px;color:#2a2;margin-bottom:8px">▲ 12% t.o.v. vorige maand</div>
+          <div class="placeholder" style="height:44px">grafiek (totaal leads over tijd)</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Stuc013.nl</div>
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:26px;font-weight:700">12 leads</div>
+          <div style="font-size:12px;color:#c33;margin-bottom:8px">▼ 4% t.o.v. vorige maand</div>
+          <div class="placeholder" style="height:44px">grafiek (totaal leads over tijd)</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">TopAirco013.nl</div>
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:26px;font-weight:700">27 leads</div>
+          <div style="font-size:12px;color:#2a2;margin-bottom:8px">▲ 3% t.o.v. vorige maand</div>
+          <div class="placeholder" style="height:44px">grafiek (totaal leads over tijd)</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="label" style="margin-top:14px">↓ zelfde data, tabel-weergave (klik "Tabel" hierboven)</p>
+    <table style="width:100%;font-size:12px;border-collapse:collapse;opacity:.55">
+      <tr style="text-align:left;opacity:.8">
+        <th style="padding:4px 8px">Site</th><th>Totaal leads</th><th>Trend</th><th>Grafiek</th>
+      </tr>
+      <tr>
+        <td style="padding:6px 8px;border-top:1px solid #8883">Loodgieter013</td>
+        <td>47</td><td style="color:#2a2">▲ 12%</td><td>▁▂▃▅▆</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 8px;border-top:1px solid #8883">Stuc013</td>
+        <td>12</td><td style="color:#c33">▼ 4%</td><td>▅▃▂▂▁</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="options" style="margin-top:20px">
+  <div class="option" data-choice="klopt" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Dit klopt</h3>
+      <p>Toggle kaarten/tabel + periode-keuze (7d/14d/maand/3mnd/6mnd/jaar/2jr), per site totaal leads + % verandering + grafiek.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="aanpassen" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>Nog iets aanpassen</h3>
+      <p>Laat in de terminal weten wat anders moet.</p>
+    </div>
+  </div>
+</div>

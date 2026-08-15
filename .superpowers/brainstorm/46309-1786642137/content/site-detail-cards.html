@@ -1,0 +1,108 @@
+<h2>Site-detail als kaarten-dashboard</h2>
+<p class="subtitle">Zelfde stijl als je voorbeeld: statcards bovenaan, grafieken erbij — leads-data boven, SEO-data eronder</p>
+
+<div class="mockup">
+  <div class="mockup-header">Loodgieter013.nl — Maand · 01.07.2026 – 31.07.2026</div>
+  <div class="mockup-body" style="padding:18px">
+
+    <div class="label" style="margin-bottom:8px">Leads</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Bel-clicks</div>
+          <div style="font-size:24px;font-weight:700">31</div>
+          <div style="font-size:11px;color:#2a2">▲ 8%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">WhatsApp-clicks</div>
+          <div style="font-size:24px;font-weight:700">9</div>
+          <div style="font-size:11px;color:#2a2">▲ 2%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Formulieren</div>
+          <div style="font-size:24px;font-weight:700">7</div>
+          <div style="font-size:11px;color:#c33">▼ 1%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0;border:1px solid #8886">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Totaal leads</div>
+          <div style="font-size:24px;font-weight:700">47</div>
+          <div style="font-size:11px;color:#2a2">▲ 12%</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Leads per week</div>
+        <div class="mockup-body">
+          <div class="placeholder" style="height:120px">staafgrafiek — leads per week, deze periode</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-header">Verdeling per bron</div>
+        <div class="mockup-body" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px">
+          <div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#4a90d9 0% 66%, #4ac26b 66% 85%, #e0a83a 85% 100%)"></div>
+          <div style="font-size:11px;display:flex;flex-direction:column;gap:2px;align-self:stretch">
+            <span>🔵 Bel — 66%</span>
+            <span>🟢 WhatsApp — 19%</span>
+            <span>🟠 Formulier — 15%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="label" style="margin:22px 0 8px">SEO</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Vertoningen</div>
+          <div style="font-size:24px;font-weight:700">18.4k</div>
+          <div style="font-size:11px;color:#2a2">▲ 6%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Kliks</div>
+          <div style="font-size:24px;font-weight:700">612</div>
+          <div style="font-size:11px;color:#2a2">▲ 9%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">CTR</div>
+          <div style="font-size:24px;font-weight:700">3.3%</div>
+          <div style="font-size:11px;color:#c33">▼ 0.2%</div>
+        </div>
+      </div>
+      <div class="mockup" style="margin:0">
+        <div class="mockup-body" style="padding:12px">
+          <div style="font-size:12px;opacity:.7">Gem. positie</div>
+          <div style="font-size:24px;font-weight:700">6.1</div>
+          <div style="font-size:11px;color:#2a2">▲ 0.4</div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div class="mockup-header">Vertoningen &amp; kliks over tijd</div>
+      <div class="mockup-body"><div class="placeholder" style="height:90px">lijngrafiek — vertoningen/kliks per week</div></div>
+    </div>
+    <p class="subtitle" style="margin-top:10px">(SEO-cardsectie is alvast in de lay-out meegenomen — de data zelf komt in een latere stap, wanneer we Search Console koppelen)</p>
+  </div>
+</div>
+
+<div class="options" style="margin-top:20px">
+  <div class="option" data-choice="klopt" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content"><h3>Dit is de richting</h3><p>Statcards + grafieken, leads boven, SEO onder.</p></div>
+  </div>
+  <div class="option" data-choice="aanpassen" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content"><h3>Nog aanpassen</h3><p>Laat weten wat anders moet in de terminal.</p></div>
+  </div>
+</div>

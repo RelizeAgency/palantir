@@ -1,0 +1,6 @@
+# infra-level secrets (Supabase DB password etc.) — not read by the app itself,
+# only used for direct Postgres/CLI access. See .env.local.
+.env*
+!.env.example
+
+.DS_Store

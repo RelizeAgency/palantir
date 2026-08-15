@@ -1,0 +1,15 @@
+name = "palantir-sync-worker"
+main = "src/index.ts"
+compatibility_date = "2026-08-13"
+compatibility_flags = ["nodejs_compat"]
+
+# Nightly at 03:00 UTC — comfortably clears NL midnight (CET/CEST) plus GA4's
+# own processing lag, and the sync itself re-fetches the last 3 days each run
+# so late-arriving GA4 data self-corrects on the next run.
+[triggers]
+crons = ["0 3 * * *"]
+
+# Secrets (set via `wrangler secret put <NAME>`, not committed here):
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+#   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+#   SYNC_TRIGGER_SECRET  (shared secret for the manual/backfill fetch() trigger)

@@ -1,0 +1,42 @@
+<h2>Site-detail: hoe splitsen we de tijdlijn uit per bron?</h2>
+<p class="subtitle">Je klikt vanuit het overzicht door naar bv. Loodgieter013.nl — periode-kiezer blijft bovenaan staan</p>
+
+<div class="cards">
+  <div class="card" data-choice="combined" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding:16px">
+        <div style="font-size:26px;font-weight:700">47 leads <span style="font-size:13px;font-weight:400;color:#2a2">▲ 12%</span></div>
+        <div class="placeholder" style="height:90px;margin:10px 0">grafiek: 3 lijnen (bel/whatsapp/form) door elkaar</div>
+        <div style="display:flex;gap:14px;font-size:12px">
+          <span>🔵 Bel — 31</span>
+          <span>🟢 WhatsApp — 9</span>
+          <span>🟠 Formulier — 7</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Eén grafiek, 3 lijnen</h3>
+      <p>Bel/WhatsApp/Formulier als losse lijnen in dezelfde grafiek. Je ziet in één oogopslag hoe de mix verschuift.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="stacked" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding:16px">
+        <div style="font-size:26px;font-weight:700">47 leads <span style="font-size:13px;font-weight:400;color:#2a2">▲ 12%</span></div>
+        <div class="placeholder" style="height:70px;margin:10px 0">grafiek: gestapelde totaalgrafiek</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+          <div class="mockup" style="margin:0"><div class="mockup-body" style="padding:8px;font-size:12px">🔵 Bel<br><b>31</b> ▲8%</div></div>
+          <div class="mockup" style="margin:0"><div class="mockup-body" style="padding:8px;font-size:12px">🟢 WhatsApp<br><b>9</b> ▲2%</div></div>
+          <div class="mockup" style="margin:0"><div class="mockup-body" style="padding:8px;font-size:12px">🟠 Formulier<br><b>7</b> ▼1%</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Totaalgrafiek + losse kaartjes per bron</h3>
+      <p>Bovenaan één totaallijn, daaronder elke bron met eigen getal + eigen trend. Rustiger, makkelijker per bron te lezen.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Klik om te kiezen, of licht toe wat je liever anders ziet.</p>

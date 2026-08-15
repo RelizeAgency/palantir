@@ -1,0 +1,85 @@
+<h2>Sites-overzicht: welke lay-out past het beste?</h2>
+<p class="subtitle">Dit is je startscherm — in één oogopslag zien hoe elke site presteert</p>
+
+<div class="cards">
+  <div class="card" data-choice="cards" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="mockup" style="margin:0">
+            <div class="mockup-header">Loodgieter013.nl</div>
+            <div class="mockup-body" style="padding:10px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+                <span>Leads deze maand</span><b>47 ▲</b>
+              </div>
+              <div class="placeholder" style="height:40px">sparkline</div>
+            </div>
+          </div>
+          <div class="mockup" style="margin:0">
+            <div class="mockup-header">Stuc013.nl</div>
+            <div class="mockup-body" style="padding:10px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
+                <span>Leads deze maand</span><b>12 ▼</b>
+              </div>
+              <div class="placeholder" style="height:40px">sparkline</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Kaarten-grid</h3>
+      <p>Elke site een eigen kaart met kernscore + minigrafiek. Visueel, schaalt goed bij weinig sites.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="table" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding:16px">
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <tr style="text-align:left;opacity:.6">
+            <th style="padding:4px 8px">Site</th><th>Bel</th><th>WhatsApp</th><th>Form</th><th>Trend</th>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;border-top:1px solid var(--border,#3332)">Loodgieter013</td>
+            <td>31</td><td>9</td><td>7</td><td>▲ 12%</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;border-top:1px solid var(--border,#3332)">Stuc013</td>
+            <td>8</td><td>2</td><td>2</td><td>▼ 4%</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;border-top:1px solid var(--border,#3332)">TopAirco013</td>
+            <td>19</td><td>5</td><td>3</td><td>▲ 3%</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Tabel</h3>
+      <p>Alle sites en metrics naast elkaar in rijen. Compact, makkelijk vergelijken, schaalt beter bij veel sites.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="list" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div class="mock-nav" style="justify-content:space-between;display:flex">
+          <span>Loodgieter013.nl</span><b style="font-size:20px">47 leads</b>
+        </div>
+        <div class="mock-nav" style="justify-content:space-between;display:flex">
+          <span>Stuc013.nl</span><b style="font-size:20px">12 leads</b>
+        </div>
+        <div class="mock-nav" style="justify-content:space-between;display:flex">
+          <span>TopAirco013.nl</span><b style="font-size:20px">27 leads</b>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Grote-getallen-lijst</h3>
+      <p>Rustige lijst, nadruk op één grote kerncijfer per site. Minimalistisch, minder detail in één oogopslag.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px">Klik een optie om te selecteren, of laat weten wat je ervan vindt in de terminal.</p>
