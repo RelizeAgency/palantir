@@ -1,19 +1,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { getActiveSites, getSitePeriodTotals } from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
-import { PeriodDropdown } from '@/components/sites/PeriodDropdown'
 import { SiteMultiSelect } from '@/components/sites/SiteMultiSelect'
-import { SitesTable } from '@/components/sites/SitesTable'
-import { ComparisonBarChart } from '@/components/charts/ComparisonBarChart'
+import { Tabs } from '@/components/site-detail/Tabs'
+import { LeadsCompareSection } from '@/components/compare/LeadsCompareSection'
 
 export default async function ComparePage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string; sites?: string }>
+  searchParams: Promise<{ leadsPeriod?: string; sites?: string }>
 }) {
   const params = await searchParams
-  const period = (params.period as PeriodKey) ?? 'month'
-  const range = getPeriodRange(period)
+  const leadsPeriod = (params.leadsPeriod as PeriodKey) ?? 'month'
+  const leadsRange = getPeriodRange(leadsPeriod)
 
   const supabase = await createClient()
   const allSites = await getActiveSites(supabase)
@@ -27,35 +26,29 @@ export default async function ComparePage({
   const rows = await Promise.all(
     selectedSites.map(async (site) => ({
       site,
-      totals: await getSitePeriodTotals(supabase, site.id, range),
+      totals: await getSitePeriodTotals(supabase, site.id, leadsRange),
     }))
   )
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-5">
         <h1 className="text-lg font-semibold text-primary">Sites vergelijken</h1>
-        <PeriodDropdown paramKey="period" current={period} />
       </div>
 
       <div className="mb-5">
         <SiteMultiSelect sites={allSites} selectedIds={selectedIds} />
       </div>
 
-      {rows.length === 0 ? (
-        <p className="rounded-lg border border-border bg-surface px-4 py-8 text-center text-sm text-secondary">
-          Selecteer minstens één site om te vergelijken.
-        </p>
-      ) : (
-        <div className="space-y-4">
-          <div className="rounded-xl border border-border bg-surface p-4">
-            <ComparisonBarChart
-              data={rows.map(({ site, totals }) => ({ name: site.name, total_leads: totals.total_leads_cur }))}
-            />
-          </div>
-          <SitesTable rows={rows} />
-        </div>
-      )}
+      <Tabs
+        tabs={[
+          {
+            id: 'leads',
+            label: 'Leads',
+            content: <LeadsCompareSection leadsPeriod={leadsPeriod} rows={rows} />,
+          },
+        ]}
+      />
     </div>
   )
 }
