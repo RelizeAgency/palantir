@@ -14,4 +14,5 @@ export const STAT_COLORS = {
   seoClicks: '#d97d4a',
   ga4Visitors: '#3f8f8a',
   ga4Engagement: '#b8657a',
+  value: '#c9a227', // Waarde-tab — potentiële omzet per maand
 }

@@ -59,3 +59,11 @@ export async function removeSite(siteId: string) {
   revalidatePath('/sites')
   revalidatePath('/settings')
 }
+
+export async function updateLeadValue(siteId: string, leadValueEur: number | null) {
+  await requireUser()
+  const supabase = createServiceRoleClient()
+  const { error } = await supabase.from('sites').update({ lead_value_eur: leadValueEur }).eq('id', siteId)
+  if (error) throw error
+  revalidatePath(`/sites/${siteId}`)
+}

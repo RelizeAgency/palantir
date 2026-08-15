@@ -51,7 +51,7 @@ export async function getSitePeriodTotals(
 export async function getSiteDailyMetrics(
   supabase: SupabaseClient,
   siteId: string,
-  range: PeriodRange
+  range: Pick<PeriodRange, 'currentStart' | 'currentEnd'>
 ): Promise<DailyMetricRow[]> {
   const { data, error } = await supabase
     .from('daily_metrics')
