@@ -1,4 +1,5 @@
 import type { DailyGa4SiteMetricRow, DailyMetricRow, DailySeoMetricRow } from '@/lib/types'
+import type { CalendarMonthRange } from '@/lib/calendarMonths'
 
 function formatDayLabel(dateStr: string): string {
   return new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
@@ -127,4 +128,37 @@ export function monthlyEngagementSeries(rows: DailyGa4SiteMetricRow[]): Ga4Daily
       label: formatMonthLabel(key),
       value: values.sessions > 0 ? Math.round((values.engagement_seconds / values.sessions) * 10) / 10 : 0,
     }))
+}
+
+export type MonthlyValueBucket = {
+  key: string
+  label: string
+  totalLeads: number
+  isCurrent: boolean
+}
+
+// Somt phone_clicks + whatsapp_clicks + form_leads + gmb_calls per kalender-
+// maand (dus inclusief GMB-bel-leads, in tegenstelling tot de `total_leads`-
+// kolom zelf, die geen gmb_calls meetelt) voor exact de meegegeven maanden.
+// Ontbrekende data wordt 0 in plaats van de maand weg te laten, zodat de
+// Waarde-tab altijd precies 3 balken toont, ook voor een net toegevoegde site.
+export function bucketByCalendarMonth(
+  rows: DailyMetricRow[],
+  months: CalendarMonthRange[]
+): MonthlyValueBucket[] {
+  const totals = new Map<string, number>(months.map((m) => [m.key, 0]))
+
+  for (const row of rows) {
+    const key = row.date.slice(0, 7)
+    if (!totals.has(key)) continue
+    const allLeads = row.phone_clicks + row.whatsapp_clicks + row.form_leads + row.gmb_calls
+    totals.set(key, (totals.get(key) ?? 0) + allLeads)
+  }
+
+  return months.map((m) => ({
+    key: m.key,
+    label: m.label,
+    totalLeads: totals.get(m.key) ?? 0,
+    isCurrent: m.isCurrent,
+  }))
 }
