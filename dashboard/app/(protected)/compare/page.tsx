@@ -34,6 +34,12 @@ export default async function ComparePage({
 
   const calendarMonths = getThreeCalendarMonths()
 
+  // Elke tak haalt data op voor allSites, niet alleen de aangevinkte sites
+  // (nodig omdat elke tabel altijd alle sites toont, zie CompareSitesTable/
+  // WaardeCompareSection/SeoCompareSection) — en alle drie draaien voor elke
+  // /compare-load, ongeacht welk tabblad actief is. Bij het huidige aantal
+  // sites verwaarloosbaar; als dit aantal fors groeit, is lazy/tab-specifieke
+  // data ophalen de eerste plek om te optimaliseren.
   const [rows, waardeRows, seoRows] = await Promise.all([
     Promise.all(
       allSites.map(async (site) => ({
