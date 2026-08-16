@@ -7,17 +7,21 @@ import { SitesTable } from '@/components/sites/SitesTable'
 export function LeadsCompareSection({
   leadsPeriod,
   rows,
+  selectedIds,
 }: {
   leadsPeriod: PeriodKey
   rows: { site: Site; totals: PeriodTotals }[]
+  selectedIds: string[]
 }) {
-  const chartData: ComparisonBarRow[] = rows.map(({ site, totals }) => ({
-    name: site.name,
-    bel: totals.phone_clicks_cur,
-    gmb: totals.gmb_calls_cur,
-    whatsapp: totals.whatsapp_clicks_cur,
-    form: totals.form_leads_cur,
-  }))
+  const chartData: ComparisonBarRow[] = rows
+    .filter(({ site }) => selectedIds.includes(site.id))
+    .map(({ site, totals }) => ({
+      name: site.name,
+      bel: totals.phone_clicks_cur,
+      gmb: totals.gmb_calls_cur,
+      whatsapp: totals.whatsapp_clicks_cur,
+      form: totals.form_leads_cur,
+    }))
 
   return (
     <div>
@@ -25,18 +29,18 @@ export function LeadsCompareSection({
         <PeriodDropdown paramKey="leadsPeriod" current={leadsPeriod} />
       </div>
 
-      {rows.length === 0 ? (
-        <p className="rounded-lg border border-border bg-surface px-4 py-8 text-center text-sm text-secondary">
-          Selecteer minstens één site om te vergelijken.
-        </p>
-      ) : (
-        <div className="space-y-4">
-          <div className="rounded-xl border border-border bg-surface p-4">
+      <div className="space-y-4">
+        <div className="rounded-xl border border-border bg-surface p-4">
+          {chartData.length === 0 ? (
+            <p className="py-8 text-center text-sm text-secondary">
+              Vink minstens één site aan om te vergelijken.
+            </p>
+          ) : (
             <ComparisonBarChart data={chartData} />
-          </div>
-          <SitesTable rows={rows} />
+          )}
         </div>
-      )}
+        <SitesTable rows={rows} selectedIds={selectedIds} />
+      </div>
     </div>
   )
 }
