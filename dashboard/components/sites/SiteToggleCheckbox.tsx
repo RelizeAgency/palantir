@@ -4,9 +4,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 
 export function SiteToggleCheckbox({
   siteId,
+  siteName,
   selectedIds,
 }: {
   siteId: string
+  siteName: string
   selectedIds: string[]
 }) {
   const router = useRouter()
@@ -25,6 +27,7 @@ export function SiteToggleCheckbox({
       type="checkbox"
       checked={checked}
       onChange={toggle}
+      aria-label={`${siteName} meenemen in vergelijking`}
       className="h-4 w-4 rounded border-border accent-accent"
     />
   )
