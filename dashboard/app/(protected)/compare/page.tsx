@@ -3,7 +3,6 @@ import { getActiveSites, getSitePeriodTotals, getSiteDailyMetrics } from '@/lib/
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
 import { getThreeCalendarMonths, getThreeMonthFetchRange } from '@/lib/calendarMonths'
 import { bucketByCalendarMonth } from '@/lib/aggregate'
-import { SiteMultiSelect } from '@/components/sites/SiteMultiSelect'
 import { Tabs } from '@/components/site-detail/Tabs'
 import { LeadsCompareSection } from '@/components/compare/LeadsCompareSection'
 import { WaardeCompareSection } from '@/components/compare/WaardeCompareSection'
@@ -24,19 +23,17 @@ export default async function ComparePage({
     ? params.sites.split(',').filter(Boolean)
     : allSites.slice(0, Math.min(3, allSites.length)).map((s) => s.id)
 
-  const selectedSites = allSites.filter((s) => selectedIds.includes(s.id))
-
   const calendarMonths = getThreeCalendarMonths()
 
   const [rows, waardeRows] = await Promise.all([
     Promise.all(
-      selectedSites.map(async (site) => ({
+      allSites.map(async (site) => ({
         site,
         totals: await getSitePeriodTotals(supabase, site.id, leadsRange),
       }))
     ),
     Promise.all(
-      selectedSites.map(async (site) => {
+      allSites.map(async (site) => {
         const daily = await getSiteDailyMetrics(supabase, site.id, getThreeMonthFetchRange(calendarMonths))
         const buckets = bucketByCalendarMonth(daily, calendarMonths)
         return { site, lastMonthLeads: buckets[1].totalLeads }
@@ -50,21 +47,17 @@ export default async function ComparePage({
         <h1 className="text-lg font-semibold text-primary">Sites vergelijken</h1>
       </div>
 
-      <div className="mb-5">
-        <SiteMultiSelect sites={allSites} selectedIds={selectedIds} />
-      </div>
-
       <Tabs
         tabs={[
           {
             id: 'leads',
             label: 'Leads',
-            content: <LeadsCompareSection leadsPeriod={leadsPeriod} rows={rows} />,
+            content: <LeadsCompareSection leadsPeriod={leadsPeriod} rows={rows} selectedIds={selectedIds} />,
           },
           {
             id: 'waarde',
             label: 'Waarde',
-            content: <WaardeCompareSection rows={waardeRows} />,
+            content: <WaardeCompareSection rows={waardeRows} selectedIds={selectedIds} />,
           },
         ]}
       />
