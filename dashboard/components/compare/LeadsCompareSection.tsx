@@ -2,7 +2,7 @@ import type { PeriodTotals, Site } from '@/lib/types'
 import type { PeriodKey } from '@/lib/periods'
 import { PeriodDropdown } from '@/components/sites/PeriodDropdown'
 import { ComparisonBarChart, type ComparisonBarRow } from '@/components/charts/ComparisonBarChart'
-import { SitesTable } from '@/components/sites/SitesTable'
+import { CompareSitesTable } from '@/components/compare/CompareSitesTable'
 
 export function LeadsCompareSection({
   leadsPeriod,
@@ -39,7 +39,7 @@ export function LeadsCompareSection({
             <ComparisonBarChart data={chartData} />
           )}
         </div>
-        <SitesTable rows={rows} selectedIds={selectedIds} />
+        <CompareSitesTable rows={rows} selectedIds={selectedIds} />
       </div>
     </div>
   )
