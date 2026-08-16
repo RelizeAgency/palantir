@@ -6,6 +6,7 @@ import { SiteToggleCheckbox } from '@/components/sites/SiteToggleCheckbox'
 export type WaardeCompareRow = {
   site: Site
   lastMonthLeads: number
+  ytdLeads: number
 }
 
 export function WaardeCompareSection({
@@ -43,10 +44,11 @@ export function WaardeCompareSection({
               <th className="px-4 py-2 font-medium">Leads vorige maand</th>
               <th className="px-4 py-2 font-medium">Leadwaarde (€/lead)</th>
               <th className="px-4 py-2 font-medium">Potentiële omzet vorige maand</th>
+              <th className="px-4 py-2 font-medium">Potentiële omzet dit jaar (jan t/m nu)</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ site, lastMonthLeads }) => (
+            {rows.map(({ site, lastMonthLeads, ytdLeads }) => (
               <tr
                 key={site.id}
                 className={`border-b border-border last:border-0 ${
@@ -64,6 +66,11 @@ export function WaardeCompareSection({
                 <td className="px-4 py-2.5 font-medium text-primary">
                   {site.lead_value_eur !== null
                     ? formatEuro(lastMonthLeads * site.lead_value_eur)
+                    : 'niet ingesteld'}
+                </td>
+                <td className="px-4 py-2.5 font-medium text-primary">
+                  {site.lead_value_eur !== null
+                    ? formatEuro(ytdLeads * site.lead_value_eur)
                     : 'niet ingesteld'}
                 </td>
               </tr>

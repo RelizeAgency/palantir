@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getActiveSites, getSitePeriodTotals, getSiteDailyMetrics } from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
-import { getThreeCalendarMonths, getThreeMonthFetchRange } from '@/lib/calendarMonths'
+import { getThreeCalendarMonths, getThreeMonthFetchRange, getYearToDateRange } from '@/lib/calendarMonths'
 import { bucketByCalendarMonth } from '@/lib/aggregate'
 import { Tabs } from '@/components/site-detail/Tabs'
 import { LeadsCompareSection } from '@/components/compare/LeadsCompareSection'
@@ -36,7 +36,9 @@ export default async function ComparePage({
       allSites.map(async (site) => {
         const daily = await getSiteDailyMetrics(supabase, site.id, getThreeMonthFetchRange(calendarMonths))
         const buckets = bucketByCalendarMonth(daily, calendarMonths)
-        return { site, lastMonthLeads: buckets[1].totalLeads }
+        const ytdDaily = await getSiteDailyMetrics(supabase, site.id, getYearToDateRange())
+        const ytdLeads = ytdDaily.reduce((sum, row) => sum + row.total_leads, 0)
+        return { site, lastMonthLeads: buckets[1].totalLeads, ytdLeads }
       })
     ),
   ])
