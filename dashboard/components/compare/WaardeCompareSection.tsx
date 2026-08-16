@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Site } from '@/lib/types'
 import { formatEuro } from '@/lib/format'
 import { ValueComparisonBarChart, type ValueComparisonRow } from '@/components/charts/ValueComparisonBarChart'
@@ -58,7 +59,11 @@ export function WaardeCompareSection({
                 <td className="px-4 py-2.5">
                   <SiteToggleCheckbox siteId={site.id} siteName={site.name} selectedIds={selectedIds} />
                 </td>
-                <td className="px-4 py-2.5 font-medium text-primary">{site.name}</td>
+                <td className="px-4 py-2.5">
+                  <Link href={`/sites/${site.id}`} className="font-medium text-primary hover:text-accent">
+                    {site.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-2.5 text-secondary">{lastMonthLeads}</td>
                 <td className="px-4 py-2.5 text-secondary">
                   {site.lead_value_eur !== null ? formatEuro(site.lead_value_eur) : 'niet ingesteld'}

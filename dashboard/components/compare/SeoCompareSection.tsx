@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Ga4SiteTotals, SeoPeriodTotals, Site } from '@/lib/types'
 import type { PeriodKey } from '@/lib/periods'
 import { formatDuration } from '@/lib/format'
@@ -67,7 +68,11 @@ export function SeoCompareSection({
                   <td className="px-4 py-2.5">
                     <SiteToggleCheckbox siteId={site.id} siteName={site.name} selectedIds={selectedIds} />
                   </td>
-                  <td className="px-4 py-2.5 font-medium text-primary">{site.name}</td>
+                  <td className="px-4 py-2.5">
+                    <Link href={`/sites/${site.id}`} className="font-medium text-primary hover:text-accent">
+                      {site.name}
+                    </Link>
+                  </td>
                   <td className="px-4 py-2.5 text-secondary">
                     {seoTotals !== null ? seoTotals.impressions_cur : 'niet gekoppeld'}
                   </td>
