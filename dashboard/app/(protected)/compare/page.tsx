@@ -1,9 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
-import { getActiveSites, getSitePeriodTotals } from '@/lib/metrics'
+import { getActiveSites, getSitePeriodTotals, getSiteDailyMetrics } from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
+import { getThreeCalendarMonths, getThreeMonthFetchRange } from '@/lib/calendarMonths'
+import { bucketByCalendarMonth } from '@/lib/aggregate'
 import { SiteMultiSelect } from '@/components/sites/SiteMultiSelect'
 import { Tabs } from '@/components/site-detail/Tabs'
 import { LeadsCompareSection } from '@/components/compare/LeadsCompareSection'
+import { WaardeCompareSection } from '@/components/compare/WaardeCompareSection'
 
 export default async function ComparePage({
   searchParams,
@@ -30,6 +33,15 @@ export default async function ComparePage({
     }))
   )
 
+  const calendarMonths = getThreeCalendarMonths()
+  const waardeRows = await Promise.all(
+    selectedSites.map(async (site) => {
+      const daily = await getSiteDailyMetrics(supabase, site.id, getThreeMonthFetchRange(calendarMonths))
+      const buckets = bucketByCalendarMonth(daily, calendarMonths)
+      return { site, lastMonthLeads: buckets[1].totalLeads }
+    })
+  )
+
   return (
     <div>
       <div className="mb-5">
@@ -46,6 +58,11 @@ export default async function ComparePage({
             id: 'leads',
             label: 'Leads',
             content: <LeadsCompareSection leadsPeriod={leadsPeriod} rows={rows} />,
+          },
+          {
+            id: 'waarde',
+            label: 'Waarde',
+            content: <WaardeCompareSection rows={waardeRows} />,
           },
         ]}
       />
