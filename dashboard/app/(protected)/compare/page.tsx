@@ -26,21 +26,23 @@ export default async function ComparePage({
 
   const selectedSites = allSites.filter((s) => selectedIds.includes(s.id))
 
-  const rows = await Promise.all(
-    selectedSites.map(async (site) => ({
-      site,
-      totals: await getSitePeriodTotals(supabase, site.id, leadsRange),
-    }))
-  )
-
   const calendarMonths = getThreeCalendarMonths()
-  const waardeRows = await Promise.all(
-    selectedSites.map(async (site) => {
-      const daily = await getSiteDailyMetrics(supabase, site.id, getThreeMonthFetchRange(calendarMonths))
-      const buckets = bucketByCalendarMonth(daily, calendarMonths)
-      return { site, lastMonthLeads: buckets[1].totalLeads }
-    })
-  )
+
+  const [rows, waardeRows] = await Promise.all([
+    Promise.all(
+      selectedSites.map(async (site) => ({
+        site,
+        totals: await getSitePeriodTotals(supabase, site.id, leadsRange),
+      }))
+    ),
+    Promise.all(
+      selectedSites.map(async (site) => {
+        const daily = await getSiteDailyMetrics(supabase, site.id, getThreeMonthFetchRange(calendarMonths))
+        const buckets = bucketByCalendarMonth(daily, calendarMonths)
+        return { site, lastMonthLeads: buckets[1].totalLeads }
+      })
+    ),
+  ])
 
   return (
     <div>
