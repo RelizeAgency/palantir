@@ -1,20 +1,29 @@
 import { createClient } from '@/lib/supabase/server'
-import { getActiveSites, getSitePeriodTotals, getSiteDailyMetrics } from '@/lib/metrics'
+import {
+  getActiveSites,
+  getSitePeriodTotals,
+  getSiteDailyMetrics,
+  getSiteSeoPeriodTotals,
+  getSiteGa4Totals,
+} from '@/lib/metrics'
 import { getPeriodRange, type PeriodKey } from '@/lib/periods'
 import { getThreeCalendarMonths, getThreeMonthFetchRange, getYearToDateRange } from '@/lib/calendarMonths'
 import { bucketByCalendarMonth } from '@/lib/aggregate'
 import { Tabs } from '@/components/site-detail/Tabs'
 import { LeadsCompareSection } from '@/components/compare/LeadsCompareSection'
 import { WaardeCompareSection } from '@/components/compare/WaardeCompareSection'
+import { SeoCompareSection } from '@/components/compare/SeoCompareSection'
 
 export default async function ComparePage({
   searchParams,
 }: {
-  searchParams: Promise<{ leadsPeriod?: string; sites?: string }>
+  searchParams: Promise<{ leadsPeriod?: string; seoPeriod?: string; sites?: string }>
 }) {
   const params = await searchParams
   const leadsPeriod = (params.leadsPeriod as PeriodKey) ?? 'month'
   const leadsRange = getPeriodRange(leadsPeriod)
+  const seoPeriod = (params.seoPeriod as PeriodKey) ?? 'month'
+  const seoRange = getPeriodRange(seoPeriod)
 
   const supabase = await createClient()
   const allSites = await getActiveSites(supabase)
@@ -25,7 +34,7 @@ export default async function ComparePage({
 
   const calendarMonths = getThreeCalendarMonths()
 
-  const [rows, waardeRows] = await Promise.all([
+  const [rows, waardeRows, seoRows] = await Promise.all([
     Promise.all(
       allSites.map(async (site) => ({
         site,
@@ -40,6 +49,13 @@ export default async function ComparePage({
         const ytdLeads = ytdDaily.reduce((sum, row) => sum + row.total_leads, 0)
         return { site, lastMonthLeads: buckets[1].totalLeads, ytdLeads }
       })
+    ),
+    Promise.all(
+      allSites.map(async (site) => ({
+        site,
+        seoTotals: site.gsc_site_url ? await getSiteSeoPeriodTotals(supabase, site.id, seoRange) : null,
+        ga4Totals: await getSiteGa4Totals(supabase, site.id, seoRange),
+      }))
     ),
   ])
 
@@ -60,6 +76,11 @@ export default async function ComparePage({
             id: 'waarde',
             label: 'Waarde',
             content: <WaardeCompareSection rows={waardeRows} selectedIds={selectedIds} />,
+          },
+          {
+            id: 'seo',
+            label: 'SEO',
+            content: <SeoCompareSection seoPeriod={seoPeriod} rows={seoRows} selectedIds={selectedIds} />,
           },
         ]}
       />
