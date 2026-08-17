@@ -52,7 +52,7 @@ export function SimpleLineChart({
           labelStyle={{ color: '#f4f4f5' }}
           formatter={(value) => formatValue(Number(value), format)}
         />
-        <Line type="monotone" dataKey={dataKey ?? 'value'} stroke={color} strokeWidth={2} dot={false} />
+        <Line type="linear" dataKey={dataKey ?? 'value'} stroke={color} strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   )

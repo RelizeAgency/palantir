@@ -51,7 +51,7 @@ export function LineChartSeo({
             labelStyle={{ color: '#f4f4f5' }}
           />
           <Line
-            type="monotone"
+            type="linear"
             dataKey="impressions"
             name="Vertoningen"
             yAxisId="impressions"
@@ -60,7 +60,7 @@ export function LineChartSeo({
             dot={false}
           />
           <Line
-            type="monotone"
+            type="linear"
             dataKey="clicks"
             name="Kliks"
             yAxisId="clicks"
