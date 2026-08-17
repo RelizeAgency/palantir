@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { requireUser } from '@/lib/auth/dal'
 import { createServiceRoleClient } from '@/lib/supabase/serviceRole'
 import { triggerBackfill } from '@/lib/sync'
+import { invalidateSitesCache } from '@/lib/metrics'
 
 export type SiteFormState = { error?: string } | undefined
 
@@ -30,6 +31,7 @@ export async function addSite(_state: SiteFormState, formData: FormData): Promis
   }
 
   await triggerBackfill(data.id)
+  invalidateSitesCache()
   revalidatePath('/sites')
   revalidatePath('/settings')
 }
@@ -39,6 +41,7 @@ export async function updateSiteGsc(siteId: string, gscSiteUrl: string) {
   const supabase = createServiceRoleClient()
   const { error } = await supabase.from('sites').update({ gsc_site_url: gscSiteUrl }).eq('id', siteId)
   if (error) throw error
+  invalidateSitesCache()
   revalidatePath('/settings')
   revalidatePath('/sites')
 }
@@ -48,6 +51,7 @@ export async function updateSiteGmb(siteId: string, gmbLocationId: string) {
   const supabase = createServiceRoleClient()
   const { error } = await supabase.from('sites').update({ gmb_location_id: gmbLocationId }).eq('id', siteId)
   if (error) throw error
+  invalidateSitesCache()
   revalidatePath('/settings')
   revalidatePath('/sites')
 }
@@ -56,6 +60,7 @@ export async function removeSite(siteId: string) {
   await requireUser()
   const supabase = createServiceRoleClient()
   await supabase.from('sites').delete().eq('id', siteId)
+  invalidateSitesCache()
   revalidatePath('/sites')
   revalidatePath('/settings')
 }
@@ -70,5 +75,6 @@ export async function updateLeadValue(siteId: string, leadValueEur: number | nul
   const supabase = createServiceRoleClient()
   const { error } = await supabase.from('sites').update({ lead_value_eur: leadValueEur }).eq('id', siteId)
   if (error) throw error
+  invalidateSitesCache()
   revalidatePath(`/sites/${siteId}`)
 }

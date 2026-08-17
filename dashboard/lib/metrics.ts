@@ -11,7 +11,29 @@ import type {
 } from '@/lib/types'
 import type { PeriodRange } from '@/lib/periods'
 
+// De sitelijst verandert zelden (alleen via Instellingen) maar wordt op
+// vrijwel elke pagina opnieuw opgehaald. In-memory TTL-cache per server-
+// instance i.p.v. Next's "use cache" — die vereist cacheComponents (PPR) en
+// heeft zonder een R2-cachehandler geen persistentie op deze Cloudflare-
+// deploy. invalidateSitesCache() wordt aangeroepen vanuit elke actie in
+// app/actions/sites.ts die de sites-tabel wijzigt.
+const SITES_CACHE_TTL_MS = 30_000
+
+type SitesCacheEntry = { data: Site[]; expiresAt: number }
+
+let activeSitesCache: SitesCacheEntry | null = null
+let allSitesCache: SitesCacheEntry | null = null
+
+export function invalidateSitesCache(): void {
+  activeSitesCache = null
+  allSitesCache = null
+}
+
 export async function getActiveSites(supabase: SupabaseClient): Promise<Site[]> {
+  if (activeSitesCache && activeSitesCache.expiresAt > Date.now()) {
+    return activeSitesCache.data
+  }
+
   const { data, error } = await supabase
     .from('sites')
     .select('*')
@@ -19,13 +41,19 @@ export async function getActiveSites(supabase: SupabaseClient): Promise<Site[]> 
     .order('name')
 
   if (error) throw error
+  activeSitesCache = { data, expiresAt: Date.now() + SITES_CACHE_TTL_MS }
   return data
 }
 
 export async function getAllSites(supabase: SupabaseClient): Promise<Site[]> {
+  if (allSitesCache && allSitesCache.expiresAt > Date.now()) {
+    return allSitesCache.data
+  }
+
   const { data, error } = await supabase.from('sites').select('*').order('name')
 
   if (error) throw error
+  allSitesCache = { data, expiresAt: Date.now() + SITES_CACHE_TTL_MS }
   return data
 }
 
