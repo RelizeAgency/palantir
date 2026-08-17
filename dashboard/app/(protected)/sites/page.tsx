@@ -56,11 +56,13 @@ export default async function SitesPage({
   }
 
   const rows = await Promise.all(
-    sites.map(async (site) => ({
-      site,
-      totals: await getSitePeriodTotals(supabase, site.id, range),
-      daily: await getSiteDailyMetrics(supabase, site.id, range),
-    }))
+    sites.map(async (site) => {
+      const [totals, daily] = await Promise.all([
+        getSitePeriodTotals(supabase, site.id, range),
+        getSiteDailyMetrics(supabase, site.id, range),
+      ])
+      return { site, totals, daily }
+    })
   )
 
   return (

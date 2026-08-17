@@ -1,4 +1,6 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import {
   getSiteDailyGa4Metrics,
@@ -17,6 +19,98 @@ import { GmbSection } from '@/components/site-detail/GmbSection'
 import { SeoSection } from '@/components/site-detail/SeoSection'
 import { ValueSection } from '@/components/site-detail/ValueSection'
 import { Tabs } from '@/components/site-detail/Tabs'
+import { TabSkeleton } from '@/components/site-detail/TabSkeleton'
+
+// Elke tab haalt zijn eigen data op in een losse Suspense-boundary, zodat de
+// pagina-shell + snelste tab meteen streamen i.p.v. te wachten tot alle 4
+// secties klaar zijn. Instant tab-wisselen blijft behouden: de client-side
+// Tabs-component krijgt alle 4 content-nodes meteen, ze poppen alleen los
+// van elkaar in zodra hun data binnen is.
+
+async function LeadsSectionAsync({
+  supabase,
+  siteId,
+  leadsPeriod,
+}: {
+  supabase: SupabaseClient
+  siteId: string
+  leadsPeriod: PeriodKey
+}) {
+  const range = getPeriodRange(leadsPeriod)
+  const [totals, daily] = await Promise.all([
+    getSitePeriodTotals(supabase, siteId, range),
+    getSiteDailyMetrics(supabase, siteId, range),
+  ])
+  const weekly = bucketByWeek(daily)
+  return <LeadsSection leadsPeriod={leadsPeriod} totals={totals} weekly={weekly} />
+}
+
+async function GmbSectionAsync({
+  supabase,
+  siteId,
+  gmbPeriod,
+  hasGmb,
+}: {
+  supabase: SupabaseClient
+  siteId: string
+  gmbPeriod: PeriodKey
+  hasGmb: boolean
+}) {
+  const range = getPeriodRange(gmbPeriod)
+  const gmbTotals = hasGmb ? await getSiteGmbPeriodTotals(supabase, siteId, range) : null
+  return <GmbSection gmbPeriod={gmbPeriod} gmbTotals={gmbTotals} />
+}
+
+async function SeoSectionAsync({
+  supabase,
+  siteId,
+  seoPeriod,
+  hasGsc,
+}: {
+  supabase: SupabaseClient
+  siteId: string
+  seoPeriod: PeriodKey
+  hasGsc: boolean
+}) {
+  const range = getPeriodRange(seoPeriod)
+  const [seoTotals, seoDaily, ga4Totals, ga4Daily] = await Promise.all([
+    hasGsc ? getSiteSeoPeriodTotals(supabase, siteId, range) : Promise.resolve(null),
+    hasGsc ? getSiteDailySeoMetrics(supabase, siteId, range) : Promise.resolve(null),
+    getSiteGa4Totals(supabase, siteId, range),
+    getSiteDailyGa4Metrics(supabase, siteId, range),
+  ])
+  const seoSeries = seoDaily ? dailySeoSeries(seoDaily) : []
+  return (
+    <SeoSection
+      seoPeriod={seoPeriod}
+      seoTotals={seoTotals}
+      seoSeries={seoSeries}
+      ga4Totals={ga4Totals}
+      ga4Daily={ga4Daily}
+    />
+  )
+}
+
+async function ValueSectionAsync({
+  supabase,
+  siteId,
+  leadValueEur,
+}: {
+  supabase: SupabaseClient
+  siteId: string
+  leadValueEur: number | null
+}) {
+  const calendarMonths = getThreeCalendarMonths()
+  const [valueDaily, ytdDaily] = await Promise.all([
+    getSiteDailyMetrics(supabase, siteId, getThreeMonthFetchRange(calendarMonths)),
+    getSiteDailyMetrics(supabase, siteId, getYearToDateRange()),
+  ])
+  const monthlyValueBuckets = bucketByCalendarMonth(valueDaily, calendarMonths)
+  const ytdLeads = ytdDaily.reduce((sum, row) => sum + row.total_leads, 0)
+  return (
+    <ValueSection siteId={siteId} leadValueEur={leadValueEur} months={monthlyValueBuckets} ytdLeads={ytdLeads} />
+  )
+}
 
 export default async function SiteDetailPage({
   params,
@@ -31,44 +125,10 @@ export default async function SiteDetailPage({
   const gmbPeriod = (sp.gmbPeriod as PeriodKey) ?? 'month'
   const seoPeriod = (sp.seoPeriod as PeriodKey) ?? 'month'
 
-  const leadsRange = getPeriodRange(leadsPeriod)
-  const gmbRange = getPeriodRange(gmbPeriod)
-  const seoRange = getPeriodRange(seoPeriod)
-
   const supabase = await createClient()
 
   const { data: site, error: siteError } = await supabase.from('sites').select('*').eq('id', id).single()
   if (siteError || !site) notFound()
-
-  const [totals, daily] = await Promise.all([
-    getSitePeriodTotals(supabase, id, leadsRange),
-    getSiteDailyMetrics(supabase, id, leadsRange),
-  ])
-
-  const weekly = bucketByWeek(daily)
-
-  const [seoTotals, seoDaily] = site.gsc_site_url
-    ? await Promise.all([
-        getSiteSeoPeriodTotals(supabase, id, seoRange),
-        getSiteDailySeoMetrics(supabase, id, seoRange),
-      ])
-    : [null, null]
-
-  const seoSeries = seoDaily ? dailySeoSeries(seoDaily) : []
-
-  const gmbTotals = site.gmb_location_id ? await getSiteGmbPeriodTotals(supabase, id, gmbRange) : null
-
-  const [ga4Totals, ga4Daily] = await Promise.all([
-    getSiteGa4Totals(supabase, id, seoRange),
-    getSiteDailyGa4Metrics(supabase, id, seoRange),
-  ])
-
-  const calendarMonths = getThreeCalendarMonths()
-  const valueDaily = await getSiteDailyMetrics(supabase, id, getThreeMonthFetchRange(calendarMonths))
-  const monthlyValueBuckets = bucketByCalendarMonth(valueDaily, calendarMonths)
-
-  const ytdDaily = await getSiteDailyMetrics(supabase, id, getYearToDateRange())
-  const ytdLeads = ytdDaily.reduce((sum, row) => sum + row.total_leads, 0)
 
   return (
     <div>
@@ -82,36 +142,47 @@ export default async function SiteDetailPage({
           {
             id: 'leads',
             label: 'Leads',
-            content: <LeadsSection leadsPeriod={leadsPeriod} totals={totals} weekly={weekly} />,
+            content: (
+              <Suspense fallback={<TabSkeleton />}>
+                <LeadsSectionAsync supabase={supabase} siteId={id} leadsPeriod={leadsPeriod} />
+              </Suspense>
+            ),
           },
           {
             id: 'gmb',
             label: 'Google Business Profile',
-            content: <GmbSection gmbPeriod={gmbPeriod} gmbTotals={gmbTotals} />,
+            content: (
+              <Suspense fallback={<TabSkeleton />}>
+                <GmbSectionAsync
+                  supabase={supabase}
+                  siteId={id}
+                  gmbPeriod={gmbPeriod}
+                  hasGmb={!!site.gmb_location_id}
+                />
+              </Suspense>
+            ),
           },
           {
             id: 'seo',
             label: 'SEO',
             content: (
-              <SeoSection
-                seoPeriod={seoPeriod}
-                seoTotals={seoTotals}
-                seoSeries={seoSeries}
-                ga4Totals={ga4Totals}
-                ga4Daily={ga4Daily}
-              />
+              <Suspense fallback={<TabSkeleton />}>
+                <SeoSectionAsync
+                  supabase={supabase}
+                  siteId={id}
+                  seoPeriod={seoPeriod}
+                  hasGsc={!!site.gsc_site_url}
+                />
+              </Suspense>
             ),
           },
           {
             id: 'value',
             label: 'Waarde',
             content: (
-              <ValueSection
-                siteId={id}
-                leadValueEur={site.lead_value_eur}
-                months={monthlyValueBuckets}
-                ytdLeads={ytdLeads}
-              />
+              <Suspense fallback={<TabSkeleton />}>
+                <ValueSectionAsync supabase={supabase} siteId={id} leadValueEur={site.lead_value_eur} />
+              </Suspense>
             ),
           },
         ]}
